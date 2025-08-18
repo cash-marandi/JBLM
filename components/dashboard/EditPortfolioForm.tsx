@@ -16,7 +16,16 @@ import { Button } from "@/components/ui/button"
 import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation"; // Import useRouter
 
-const EditPortfolioForm = ({ portfolio: initialPortfolio }) => {
+interface Portfolio {
+  _id: string;
+  name: string;
+  department: string;
+  description: string;
+  category: string;
+  image: string;
+}
+
+const EditPortfolioForm = ({ portfolio: initialPortfolio }: { portfolio: Portfolio }) => {
   const router = useRouter(); // Initialize useRouter
   const [form, setForm] = useState({
     name: "",

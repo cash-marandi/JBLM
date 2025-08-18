@@ -15,7 +15,17 @@ import { Button } from "@/components/ui/button"
 import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation"; // Import useRouter
 
-const EditTeamForm = ({ team: initialTeam }) => {
+interface TeamMember {
+  _id: string;
+  name: string;
+  qualification: string;
+  post: string;
+  position: string;
+  category: string;
+  image: string;
+}
+
+const EditTeamForm = ({ team: initialTeam }: { team: TeamMember }) => {
   const router = useRouter(); // Initialize useRouter
   const [form, setForm] = useState({
     name: "",

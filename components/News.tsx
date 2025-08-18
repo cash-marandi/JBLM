@@ -23,8 +23,12 @@ export default function News() {
                 }
                 const data = await res.json();
                 setPosts(data);
-            } catch (err) {
-                setError(err.message);
+            } catch (err: any) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("An unknown error occurred");
+                }
             } finally {
                 setLoading(false);
             }

@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import NewsPost from '@/components/newsPost';
 
 export default function SingleNewsPage() {
-  const { post_id } = useParams();
+  const params = useParams();
+  const post_id = params?.post_id;
   const router = useRouter();
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);

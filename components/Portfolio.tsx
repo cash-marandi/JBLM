@@ -6,8 +6,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from 'next/image';
 import { HoverEffect } from "./ui/card-hover-effect";
 
+interface PortfolioItem {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  image: string;
+}
+
 export default function Portfolio() {
-  const [portfolio, setPortfolio] = useState([]);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
@@ -30,10 +38,14 @@ export default function Portfolio() {
         }
         const data = await res.json();
         setPortfolio(data);
-        const uniqueCategories = Array.from(new Set(data.map((item: any) => item.category)));
+        const uniqueCategories = Array.from(new Set(data.map((item: any) => item.category))) as string[];
         setCategories(["All", ...uniqueCategories]);
-      } catch (err) {
-        setError(err.message);
+      } catch (err: any) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }

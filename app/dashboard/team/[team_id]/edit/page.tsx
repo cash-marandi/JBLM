@@ -1,8 +1,9 @@
 
 import EditTeamForm from "@/components/dashboard/EditTeamForm";
+import { PageProps } from "@/types";
 
-export default async function EditTeamPage({ params }: { params: { team_id: string } }) {
-    const { team_id } = params;
+export default async function EditTeamPage({ params }: PageProps<{ team_id: string }>) {
+    const { team_id } = await params;
 
     let teamMember = null;
     try {

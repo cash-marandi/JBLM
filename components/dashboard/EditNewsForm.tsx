@@ -16,7 +16,17 @@ import { Button } from "@/components/ui/button"
 import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation"; // Import useRouter
 
-const EditNewsForm = ({ post: initialPost }) => {
+interface Post {
+  _id: string;
+  title: string;
+  subTitle: string;
+  post: string;
+  author: string;
+  date: string;
+  image: string;
+}
+
+const EditNewsForm = ({ post: initialPost }: { post: Post }) => {
   const router = useRouter(); // Initialize useRouter
   const [form, setForm] = useState({
     title: "",

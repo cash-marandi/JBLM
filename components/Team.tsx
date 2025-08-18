@@ -4,8 +4,16 @@ import React, { useState, useEffect } from 'react'
 import Header from './reusable-components/Header'
 import { AnimatedTestimonials } from './ui/animated-testimonials'
 
+interface TeamMember {
+    _id: string;
+    name: string;
+    qualification: string;
+    position: string;
+    image: string;
+}
+
 export default function Team() {
-    const [team, setTeam] = useState([]);
+    const [team, setTeam] = useState<TeamMember[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,8 +26,12 @@ export default function Team() {
                 }
                 const data = await res.json();
                 setTeam(data);
-            } catch (err) {
-                setError(err.message);
+            } catch (err: any) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("An unknown error occurred");
+                }
             } finally {
                 setLoading(false);
             }
@@ -41,7 +53,7 @@ export default function Team() {
         designation: member.position || '', 
                 src: (() => {
             const imageUrl = member.image;
-            const isValidUrl = (url) => {
+            const isValidUrl = (url: string) => {
                 try {
                     new URL(url);
                     return true;

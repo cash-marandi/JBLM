@@ -1,13 +1,7 @@
 
 import EditPortfolioForm from "@/components/dashboard/EditPortfolioForm";
 
-interface EditPortfolioPageProps {
-    params: {
-        portfolio_id: string;
-    };
-}
-
-export default async function EditPortfolioPage({ params }: EditPortfolioPageProps) {
+export default async function EditPortfolioPage({ params }: { params: { portfolio_id: string } }) {
     const { portfolio_id } = params;
 
     let portfolioItem = null;

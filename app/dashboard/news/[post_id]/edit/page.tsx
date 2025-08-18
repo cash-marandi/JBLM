@@ -1,14 +1,8 @@
 
 import EditNewsForm from "@/components/dashboard/EditNewsForm";
 
-interface EditNewsPageProps {
-    params: {
-        post_id: string;
-    };
-}
-
-export default async function EditNewsPage({ params }: EditNewsPageProps) {
-    const { post_id } = await params; // Await params
+export default async function EditNewsPage({ params }: { params: { post_id: string } }) {
+    const { post_id } = params;
     console.log("Fetching news post with ID:", post_id);
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // Provide a fallback
     const apiUrl = `${baseUrl}/api/news/${post_id}`;

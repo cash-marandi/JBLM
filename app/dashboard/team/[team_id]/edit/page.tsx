@@ -1,13 +1,7 @@
 
 import EditTeamForm from "@/components/dashboard/EditTeamForm";
 
-interface EditTeamPageProps {
-    params: {
-        team_id: string;
-    };
-}
-
-export default async function EditTeamPage({ params }: EditTeamPageProps) {
+export default async function EditTeamPage({ params }: { params: { team_id: string } }) {
     const { team_id } = params;
 
     let teamMember = null;

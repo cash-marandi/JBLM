@@ -40,7 +40,7 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
             <p className="text-gray-400">3 Lourens Street, Sonheuwel, Mbombela 1200</p>
             <p className="text-gray-400">admin@jblmqs.com</p>
-            <p className="text-gray-400">013 741 1716</p>
+            <p className="text-gray-400">013 010 4060</p>
           </div>
 
           {/* Newsletter */}
@@ -49,7 +49,7 @@ export default function Footer() {
             <p className="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates.</p>
             <form className="flex">
               <input type="email" placeholder="Your Email" className="w-full px-4 py-2 rounded-l-md focus:outline-none" />
-              <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md">Subscribe</button>
+              <button type="submit" className="bg-primary hover:bg-primary px-4 py-2 rounded-r-md">Subscribe</button>
             </form>
           </div>
         </div>

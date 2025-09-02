@@ -8,17 +8,17 @@ import { ArrowRight } from 'lucide-react';
 export default function HeroSection() {
   return (
     <section>
-        <div id='Hero' className='min-h-[90vh] flex items-center justify-center
+        <div id='Hero' className='min-h-[80vh] flex items-center justify-center
         px-4 sm:px-6 lg:px-8 overflow-hidden'> 
         <div className='max-w-7xl mx-auto '>
-            <div className='grid lg:grid-cols-2 gap-12 items-center'>
+            <div className='grid lg:grid-cols-2 gap-8 items-center'>
                 {/* Left Side Content */}
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                    className='text-center lg:text-left'>
+                    className='text-center lg:text-left lg:mx-10 '>
                     <h1 className='text-4xl md:text-6xl lg:text-7xl font-serif 
                     font-bold text-foreground loading-tight mb-6'>
                         Welcome to <span className='text-primary italic'>JBLM Quantity Surveyors</span>

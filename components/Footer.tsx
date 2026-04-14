@@ -1,60 +1,114 @@
-import { Facebook, Instagram } from 'lucide-react';
-import Link from 'next/link';
-import React from 'react';
+"use client"
+
+import Link from "next/link";
+import { Linkedin, Twitter, Facebook, MapPin, Phone, Mail, ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-background text-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <h3 className="text-2xl font-bold mb-4">JBLM-QS</h3>
-            <p className="text-gray-400 mb-4">
-              Your trusted partner in Quantity Surveying. We provide expert cost management and project advisory services.
+    <footer className="bg-black border-t border-gold/20 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Logo & Description */}
+          <div>
+            <Link href="/" className="flex items-center gap-3 mb-6">
+              <img src="/image/logo.png" alt="JBLM Logo" className="h-16 w-auto" />
+            </Link>
+            <p className="text-gray-400">
+              JBLM Quantity Surveyors - Your trusted partner in construction cost management 
+              and project success since 1999.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
-                <Facebook className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
-                <Instagram className="h-6 w-6" />
-              </a>
+            <div className="flex gap-4 mt-6">
+              {[Linkedin, Twitter, Facebook].map((Icon, i) => (
+                <a key={i} href="#" className="text-gray-400 hover:text-gold transition-colors">
+                  <Icon className="w-5 h-5" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-400 hover:text-white">Home</Link></li>
-              <li><Link href="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
-              <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
-              <li><Link href="/portfolio" className="text-gray-400 hover:text-white">Portfolio</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+            <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
+            <ul className="space-y-3">
+              {[
+                { name: "About Us", href: "/about" },
+                { name: "Services", href: "/services" },
+                { name: "Portfolio", href: "/portfolio" },
+                { name: "News", href: "/news" },
+                { name: "Contact", href: "/#contact" },
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-gray-400 hover:text-gold transition-colors">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Services */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
-            <p className="text-gray-400">3 Lourens Street, Sonheuwel, Mbombela 1200</p>
-            <p className="text-gray-400">admin@jblmqs.com</p>
-            <p className="text-gray-400">013 010 4060</p>
+            <h4 className="text-lg font-bold text-white mb-6">Services</h4>
+            <ul className="space-y-3">
+              {["Quantity Surveying", "Cost Management", "Contract Administration", "Project Planning", "Risk Management"].map((service) => (
+                <li key={service}>
+                  <Link href="/services" className="text-gray-400 hover:text-gold transition-colors">
+                    {service}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Contact */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Stay Updated</h4>
-            <p className="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates.</p>
-            <form className="flex">
-              <input type="email" placeholder="Your Email" className="w-full px-4 py-2 rounded-l-md focus:outline-none" />
-              <button type="submit" className="bg-primary hover:bg-primary px-4 py-2 rounded-r-md">Subscribe</button>
-            </form>
+            <h4 className="text-lg font-bold text-white mb-6">Contact</h4>
+            <ul className="space-y-3 text-gray-400">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
+                <span>3 Lourens Street, Sonheuwel, Mbombela 1200</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-gold flex-shrink-0" />
+                <span>013 010 4060</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-gold flex-shrink-0" />
+                <span>admin@jblmqs.com</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} JBLM Quantity Survey. All rights reserved.</p>
+
+        {/* Divider */}
+        <div className="divider-gold my-12" />
+
+        {/* Bottom */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} JBLM Quantity Surveyors. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm text-gray-500">
+            <a href="#" className="hover:text-gold transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-gold transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-gold transition-colors">Cookie Policy</a>
+          </div>
+        </div>
+
+        {/* Developer Credit */}
+        <div className="mt-8 pt-8 border-t border-gold/10 text-center">
+          <p className="text-gray-500 text-sm">
+            Website developed by{" "}
+            <a 
+              href="https://www.livelonke.co.za" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gold hover:underline inline-flex items-center gap-1"
+            >
+              Live Lonke ICT
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Button } from "./ui/button";
 import {
@@ -28,6 +28,8 @@ import {
   Twitter,
   Facebook,
   ArrowUpRight,
+  Ruler,
+  HardHat,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -67,23 +69,237 @@ function AnimatedCounter({ end, suffix = "", prefix = "" }: { end: number; suffi
   return <span ref={ref}>{prefix}{count}{suffix}</span>;
 }
 
+function MouseTracker3D() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const x = (e.clientY - centerY) / 20;
+    const y = (centerX - e.clientX) / 20;
+    
+    setRotation({ x, y });
+    setMousePos({ 
+      x: ((e.clientX - rect.left) / rect.width) * 100, 
+      y: ((e.clientY - rect.top) / rect.height) * 100 
+    });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [handleMouseMove]);
+
+  return (
+    <div 
+      ref={containerRef}
+      className="relative w-full h-full perspective-1000"
+    >
+      {/* 3D Building Construction */}
+      <motion.div 
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ 
+          transformStyle: "preserve-3d",
+          rotateX: rotation.x,
+          rotateY: rotation.y,
+        }}
+      >
+        {/* Main Building Container */}
+        <div className="relative" style={{ transformStyle: "preserve-3d", transform: "translateZ(0)" }}>
+          {/* Building Layer 1 - Base */}
+          <motion.div 
+            className="absolute left-1/2 -translate-x-1/2 w-48 h-20 bg-gradient-to-r from-gold/20 to-gold/10 border-2 border-gold/40 rounded-lg"
+            style={{ 
+              transform: "translateZ(20px) translateY(80px)",
+              boxShadow: `0 0 30px ${mousePos.x > 50 ? 'rgba(250, 226, 81, 0.3)' : 'rgba(250, 226, 81, 0.1)'}`,
+              transition: "box-shadow 0.3s ease"
+            }}
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
+          
+          {/* Building Layer 2 */}
+          <motion.div 
+            className="absolute left-1/2 -translate-x-1/2 w-40 h-24 bg-gradient-to-r from-gold/25 to-gold/15 border-2 border-gold/50 rounded-lg"
+            style={{ 
+              transform: "translateZ(40px) translateY(50px)",
+              boxShadow: `0 0 25px ${mousePos.y > 50 ? 'rgba(250, 226, 81, 0.35)' : 'rgba(250, 226, 81, 0.15)'}`,
+              transition: "box-shadow 0.3s ease"
+            }}
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, delay: 0.2 }}
+          />
+          
+          {/* Building Layer 3 */}
+          <motion.div 
+            className="absolute left-1/2 -translate-x-1/2 w-32 h-28 bg-gradient-to-r from-gold/30 to-gold/20 border-2 border-gold/60 rounded-lg"
+            style={{ 
+              transform: "translateZ(60px) translateY(15px)",
+              boxShadow: `0 0 20px ${mousePos.x < 50 ? 'rgba(250, 226, 81, 0.4)' : 'rgba(250, 226, 81, 0.2)'}`,
+              transition: "box-shadow 0.3s ease"
+            }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, delay: 0.4 }}
+          />
+          
+          {/* Building Layer 4 - Top */}
+          <motion.div 
+            className="absolute left-1/2 -translate-x-1/2 w-24 h-32 bg-gradient-to-r from-gold/40 to-gold/30 border-2 border-gold/70 rounded-lg"
+            style={{ 
+              transform: "translateZ(80px) translateY(-30px)",
+              boxShadow: "0 0 40px rgba(250, 226, 81, 0.5)",
+            }}
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.6 }}
+          />
+          
+          {/* Roof/Spire */}
+          <motion.div 
+            className="absolute left-1/2 -translate-x-1/2 w-4 h-20 bg-gradient-to-t from-gold to-gold/50"
+            style={{ 
+              transform: "translateZ(110px) translateY(-80px)",
+              clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+              boxShadow: "0 0 50px rgba(250, 226, 81, 0.6)",
+            }}
+            animate={{ y: [0, -5, 0], scaleY: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          
+          {/* Wireframe Lines - Horizontal */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <motion.div
+              key={`h-line-${i}`}
+              className="absolute left-1/2 -translate-x-1/2 h-px bg-gold/60"
+              style={{ 
+                width: i % 2 === 0 ? "280px" : "200px",
+                transform: `translateZ(${40 + i * 20}px) translateY(${60 - i * 20}px)`,
+              }}
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
+            />
+          ))}
+          
+          {/* Wireframe Lines - Vertical */}
+          {[-1, 0, 1].map((i) => (
+            <motion.div
+              key={`v-line-${i}`}
+              className="absolute top-1/2 w-px bg-gold/40"
+              style={{ 
+                height: "200px",
+                left: `calc(50% + ${i * 60}px)`,
+                transform: `translateZ(50px) translateY(-40px)`,
+              }}
+              initial={{ scaleY: 0, opacity: 0 }}
+              animate={{ scaleY: 1, opacity: 1 }}
+              transition={{ delay: 0.8 + Math.abs(i) * 0.1, duration: 0.5 }}
+            />
+          ))}
+          
+          {/* Window Grids on Buildings */}
+          <div className="absolute left-1/2 -translate-x-1/2" style={{ transform: "translateZ(85px) translateY(-20px)" }}>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { shadow: "0 0 8px", opacity: 0.3, duration: 2.5, delay: 0 },
+                { shadow: "0 0 12px", opacity: 0.4, duration: 3, delay: 0.5 },
+                { shadow: "0 0 6px", opacity: 0.35, duration: 2.8, delay: 1 },
+                { shadow: "0 0 10px", opacity: 0.45, duration: 3.2, delay: 0.3 },
+                { shadow: "0 0 14px", opacity: 0.5, duration: 2.6, delay: 0.8 },
+                { shadow: "0 0 7px", opacity: 0.32, duration: 3.5, delay: 1.2 },
+                { shadow: "0 0 9px", opacity: 0.4, duration: 2.9, delay: 0.6 },
+                { shadow: "0 0 11px", opacity: 0.38, duration: 3.1, delay: 0.9 },
+                { shadow: "0 0 8px", opacity: 0.42, duration: 2.7, delay: 1.5 },
+              ].map((win, i) => (
+                <motion.div
+                  key={`window-${i}`}
+                  className="w-6 h-8 bg-gold/20 border border-gold/50 rounded-sm"
+                  style={{
+                    boxShadow: `rgba(250, 226, 81, 0.3) ${win.shadow}`,
+                  }}
+                  animate={{ opacity: [win.opacity, 0.8, win.opacity] }}
+                  transition={{ duration: win.duration, repeat: Infinity, delay: win.delay }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Floating Construction Elements */}
+        <motion.div 
+          className="absolute top-10 right-10 text-gold/60"
+          style={{ transform: `translateZ(100px)` }}
+          animate={{ 
+            y: [0, -15, 0], 
+            rotate: [0, 5, 0],
+            x: mousePos.x > 60 ? 10 : 0
+          }}
+          transition={{ duration: 5, repeat: Infinity }}
+        >
+          <HardHat className="w-12 h-12" />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute bottom-20 left-10 text-gold/60"
+          style={{ transform: `translateZ(80px)` }}
+          animate={{ 
+            y: [0, 10, 0], 
+            rotate: [0, -5, 0],
+            x: mousePos.x < 40 ? -10 : 0
+          }}
+          transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
+        >
+          <Ruler className="w-10 h-10" />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute top-1/3 left-5 text-gold/40"
+          style={{ transform: `translateZ(120px)` }}
+          animate={{ 
+            y: [0, -8, 0],
+            x: mousePos.y > 50 ? -5 : 5
+          }}
+          transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+        >
+          <Calculator className="w-8 h-8" />
+        </motion.div>
+      </motion.div>
+      
+      {/* Glow Effect Following Mouse */}
+      <div 
+        className="absolute w-64 h-64 rounded-full pointer-events-none transition-all duration-300"
+        style={{
+          left: `${mousePos.x}%`,
+          top: `${mousePos.y}%`,
+          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle, rgba(250, 226, 81, 0.15) 0%, transparent 70%)",
+        }}
+      />
+    </div>
+  );
+}
+
 export default function HeroSection() {
   const { scrollY } = useScroll();
   const [isVisible, setIsVisible] = useState(false);
 
   const y1 = useTransform(scrollY, [0, 800], [0, 200]);
   const y2 = useTransform(scrollY, [0, 800], [0, -200]);
-  const opacity = useTransform(scrollY, [0, 600], [1, 0]);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const stats = [
-    { label: "Projects Completed", value: 500, suffix: "+", icon: Building },
-    { label: "Years Experience", value: 25, suffix: "+", icon: Clock },
-    { label: "Team Professionals", value: 50, suffix: "+", icon: Users },
-    { label: "Client Satisfaction", value: 98, suffix: "%", icon: Award },
+  const heroStats = [
+    { value: "500+", label: "Projects Completed" },
+    { value: "25+", label: "Years Experience" },
+    { value: "50+", label: "Team Professionals" },
+    { value: "98%", label: "Client Satisfaction" },
   ];
 
   const services = [
@@ -198,18 +414,6 @@ export default function HeroSection() {
           
           {/* Grid Pattern */}
           <div className="absolute inset-0 pattern-grid opacity-30" />
-          
-          {/* Floating Elements */}
-          <motion.div
-            animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-            transition={{ duration: 6, repeat: Infinity }}
-            className="absolute top-1/4 left-20 w-20 h-20 border-2 border-gold/30 rounded-full"
-          />
-          <motion.div
-            animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
-            transition={{ duration: 8, repeat: Infinity }}
-            className="absolute bottom-1/4 right-20 w-32 h-32 border border-gold/20 rounded-full"
-          />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
@@ -219,7 +423,7 @@ export default function HeroSection() {
             animate={isVisible ? "visible" : "hidden"}
             className="grid lg:grid-cols-2 gap-12 items-center"
           >
-            {/* Left Content */}
+            {/* Left Content - Text */}
             <motion.div variants={fadeInUp} className="text-center lg:text-left">
               {/* Badge */}
               <motion.div
@@ -230,7 +434,7 @@ export default function HeroSection() {
               >
                 <Zap className="w-4 h-4 text-gold" />
                 <span className="text-sm text-gold font-medium">
-                  Trusted by 200+ Companies Nationwide
+                  Precision in Every Measurement
                 </span>
               </motion.div>
 
@@ -256,6 +460,47 @@ export default function HeroSection() {
                 to transform your vision into reality.
               </motion.p>
 
+              {/* Stats Grid */}
+              <motion.div 
+                variants={fadeInUp}
+                className="mt-10 grid grid-cols-2 gap-6"
+              >
+                {heroStats.map((stat, i) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                    className="text-center lg:text-left"
+                  >
+                    <p className="text-4xl lg:text-5xl font-bold text-gold">{stat.value}</p>
+                    <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Success Rate Bar */}
+              <motion.div 
+                variants={fadeInUp}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="mt-8"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-400">Project Success Rate</span>
+                  <span className="text-gold font-bold">98.5%</span>
+                </div>
+                <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: "98.5%" }}
+                    transition={{ duration: 2, delay: 1 }}
+                    className="h-full bg-gradient-to-r from-gold to-gold-light rounded-full"
+                  />
+                </div>
+              </motion.div>
+
               {/* CTA Buttons */}
               <motion.div
                 variants={fadeInUp}
@@ -267,7 +512,7 @@ export default function HeroSection() {
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
-                <Link href="#portfolio">
+                <Link href="/portfolio">
                   <Button variant="outline" size="lg" className="btn-outline-gold w-full sm:w-auto text-lg px-8 py-6 bg-transparent">
                     <Play className="mr-2 w-5 h-5" />
                     View Our Work
@@ -282,8 +527,8 @@ export default function HeroSection() {
               >
                 {[
                   { icon: Shield, text: "Fully Insured" },
-                  { icon: Award, text: "ISO Certified" },
-                  { icon: Clock, text: "24/7 Support" },
+                  { icon: Award, text: "RICS Certified" },
+                  { icon: Clock, text: "25+ Years" },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-2">
                     <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center">
@@ -295,93 +540,14 @@ export default function HeroSection() {
               </motion.div>
             </motion.div>
 
-            {/* Right Content - Visual Element */}
+            {/* Right Content - 3D Visual */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="hidden lg:block relative"
+              className="hidden lg:block relative h-[500px]"
             >
-              {/* Main Visual */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gold/20 to-transparent rounded-3xl" />
-                <div className="glass-dark rounded-3xl p-8 relative overflow-hidden">
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-2 gap-6">
-                    {stats.map((stat, i) => (
-                      <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
-                        className="text-center p-4 rounded-2xl bg-white/5 border border-white/10"
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-gold/10 mx-auto mb-3 flex items-center justify-center">
-                          <stat.icon className="w-6 h-6 text-gold" />
-                        </div>
-                        <p className="text-3xl font-bold text-gold">
-                          <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                        </p>
-                        <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  {/* Mini Chart */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="mt-6 p-4 rounded-2xl bg-white/5 border border-white/10"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm text-gray-400">Project Success Rate</span>
-                      <span className="text-gold font-semibold">98.5%</span>
-                    </div>
-                    <div className="h-3 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "98.5%" }}
-                        transition={{ duration: 2, delay: 1.2 }}
-                        className="h-full bg-gradient-to-r from-gold to-gold-light rounded-full"
-                      />
-                    </div>
-                  </motion.div>
-                </div>
-
-                {/* Floating Badge */}
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -right-4 top-1/4 glass-dark rounded-xl px-4 py-3 shadow-gold"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <TrendingUp className="w-5 h-5 text-emerald-400" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">On Budget</p>
-                      <p className="text-sm font-bold text-white">+23.5%</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="absolute -left-4 bottom-1/4 glass-dark rounded-xl px-4 py-3 shadow-gold"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                      <Award className="w-5 h-5 text-gold" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">RICS</p>
-                      <p className="text-sm font-bold text-white">Certified</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
+              <MouseTracker3D />
             </motion.div>
           </motion.div>
         </div>
@@ -429,9 +595,9 @@ export default function HeroSection() {
             >
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=500&fit=crop"
+                  src="/image/cover1.jpg"
                   alt="JBLM Team"
-                  className="rounded-2xl shadow-2xl"
+                  className="rounded-2xl shadow-2xl w-full h-full object-cover"
                 />
                 <div className="absolute -bottom-6 -right-6 glass-dark rounded-2xl p-6 shadow-gold">
                   <div className="flex items-center gap-4">
